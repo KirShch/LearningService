@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -50,6 +51,12 @@ public class UserService {
     public User findByEmail(String email){
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found, email: " + email));
+    }
+
+    @Transactional
+    public User findById(UUID id){
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found, email: " + id));
     }
 
     @Transactional

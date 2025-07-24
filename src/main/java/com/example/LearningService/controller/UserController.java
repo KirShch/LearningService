@@ -1,26 +1,23 @@
 package com.example.LearningService.controller;
 
+import com.example.LearningService.cervice.EnrollmentService;
 import com.example.LearningService.cervice.UserService;
-import com.example.LearningService.dto.CreateCourseDto;
 import com.example.LearningService.dto.UserRegistrationDto;
-import com.example.LearningService.model.Course;
-import com.example.LearningService.model.User;
-import com.example.LearningService.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
 public class UserController {
-    private final UserRepository userRepository;
     private final UserService userService;
+    private final EnrollmentService enrollmentService;
 
     @PostMapping("/auth/register")
     public ResponseEntity<?> userRegistration(@Valid @RequestBody UserRegistrationDto userDto, BindingResult bindingResult){
@@ -38,9 +35,9 @@ public class UserController {
         return ResponseEntity.ofNullable(userService.userRegistration(userDto));
     }
 
-    @GetMapping("/allusers")
-    public ResponseEntity<?> getAllUsers(){
-        return ResponseEntity.ok(userService.getAllUsers());
+    @GetMapping("/users/{userId}/enrollments")
+    public ResponseEntity<?> getUserEnrollments(@PathVariable UUID userId){
+        return ResponseEntity.ok(enrollmentService.getEnrollmentsByUser(userService.findById(userId)));
     }
 
 }
