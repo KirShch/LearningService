@@ -13,31 +13,29 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "enrollments")
+public class Enrollment {
     @Id
     @UuidGenerator
     @Column(updatable = false, nullable = false)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    //@Column(nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn(name = "user_id")
+    private User user;
 
-    @Column(nullable = false)
-    private String password; // захеширован
-
-    @Column(nullable = false)
-    private String firstName;
-
-    @Column(nullable = false)
-    private String lastName;
+    //@Column(nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn(name = "course_id")
+    private Course course;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
-    private Role role; // STUDENT, TEACHER, ADMIN
+    private EnrollmentStatus status; // ACTIVE, COMPLETED, CANCELLED
 
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime enrolledAt;
 
-    private LocalDateTime updatedAt;
+    private LocalDateTime completedAt;
 }

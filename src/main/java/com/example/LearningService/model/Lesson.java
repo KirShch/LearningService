@@ -6,38 +6,33 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "lessons")
+public class Lesson {
     @Id
     @UuidGenerator
     @Column(updatable = false, nullable = false)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @Column(nullable = false)
+    private String title;
 
     @Column(nullable = false)
-    private String password; // захеширован
-
-    @Column(nullable = false)
-    private String firstName;
-
-    @Column(nullable = false)
-    private String lastName;
+    private String content;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
-    private Role role; // STUDENT, TEACHER, ADMIN
+    private LessonType type; // TEXT, VIDEO, QUIZ, ASSIGNMENT
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
+    //@Column(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "module_id")
+    private Module module;
 
-    private LocalDateTime updatedAt;
+    private boolean isPreview;
 }

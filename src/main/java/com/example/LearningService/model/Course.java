@@ -7,34 +7,37 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "courses")
+public class Course {
     @Id
     @UuidGenerator
     @Column(updatable = false, nullable = false)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @Column(nullable = false)
+    private String title;
 
     @Column(nullable = false)
-    private String password; // захеширован
+    private String description;
 
-    @Column(nullable = false)
-    private String firstName;
-
-    @Column(nullable = false)
-    private String lastName;
+    //@Column(nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn(name = "author_id")
+    private User author; // TEACHER or ADMIN
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
-    private Role role; // STUDENT, TEACHER, ADMIN
+    private CourseStatus status; // DRAFT, PUBLISHED, ARCHIVED
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "course")
+    private List<Module> modules;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
