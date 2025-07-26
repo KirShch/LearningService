@@ -1,11 +1,9 @@
 package com.example.LearningService.repository;
 
-import com.example.LearningService.model.Assignment;
+import com.example.LearningService.entity.Assignment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
-
 @Repository
-public interface AssignmentRepository extends JpaRepository<Assignment, UUID> {
+public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 }

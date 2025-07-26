@@ -1,29 +1,30 @@
 package com.example.LearningService.dto;
 
 
-import com.example.LearningService.model.CourseStatus;
-import jakarta.validation.constraints.NotBlank;
+import com.example.LearningService.entity.CourseStatus;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateCourseDto {
+public class CourseDto {
 
-    @NotBlank(message = "title cannot be null")
+    @NotNull(message = "title cannot be null")
     @Size(min = 1, max = 60, message = "title must between 1 and 60")
     private String title;
 
     private String description;
 
-    private UUID user_id;
+    private Long authorId;
 
-    @Pattern(regexp = "DRAFT|PUBLISHED|ARCHIVED", message = "Should be one of: DRAFT, PUBLISHED, ARCHIVED")
+    @NotNull(message = "Should be one of: DRAFT, PUBLISHED, ARCHIVED")
     private CourseStatus status;
 }

@@ -1,14 +1,13 @@
 package com.example.LearningService.repository;
 
-import com.example.LearningService.model.Enrollment;
-import com.example.LearningService.model.User;
+import com.example.LearningService.entity.Enrollment;
+import com.example.LearningService.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.UUID;
 
 @Repository
-public interface EnrollmentRepository extends JpaRepository<Enrollment, UUID> {
+public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     public List<Enrollment> findEnrollmentsByUser(User user);
 }

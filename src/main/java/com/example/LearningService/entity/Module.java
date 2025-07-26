@@ -1,24 +1,21 @@
-package com.example.LearningService.model;
+package com.example.LearningService.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UuidGenerator;
-
+import lombok.*;
 import java.util.List;
-import java.util.UUID;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "modules")
 public class Module {
     @Id
-    @UuidGenerator
-    @Column(updatable = false, nullable = false)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private String title;
@@ -29,12 +26,24 @@ public class Module {
     @Column(nullable = false)
     private int orderInCourse;
 
-    //@Column(nullable = false)
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
     private Course course;
 
+    @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "module")
     private List<Lesson> lessons;
+
+    @Override
+    public final boolean equals(Object o) {
+        if (!(o instanceof Module that)) return false;
+        return getId() != null && getId().equals(that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title);
+    }
 
 }

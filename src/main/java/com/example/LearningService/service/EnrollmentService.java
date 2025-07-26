@@ -1,14 +1,13 @@
-package com.example.LearningService.cervice;
+package com.example.LearningService.service;
 
-import com.example.LearningService.model.Enrollment;
-import com.example.LearningService.model.User;
+import com.example.LearningService.entity.Enrollment;
+import com.example.LearningService.entity.User;
 import com.example.LearningService.repository.EnrollmentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service

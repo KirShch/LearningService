@@ -1,0 +1,9 @@
+package com.example.LearningService.LearningServiceBuisnessException;
+
+import org.springframework.http.HttpStatus;
+
+public class UserEmailExistsException extends LearningServiceException{
+    public UserEmailExistsException(String message){
+        super(message, HttpStatus.NOT_ACCEPTABLE);
+    }
+}
