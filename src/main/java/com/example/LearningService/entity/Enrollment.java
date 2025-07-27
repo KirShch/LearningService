@@ -18,12 +18,12 @@ public class Enrollment {
     private Long id;
 
     @ToString.Exclude
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @ToString.Exclude
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "course_id")
     private Course course;
 
@@ -38,13 +38,13 @@ public class Enrollment {
     private Instant completedAt;
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (!(o instanceof Enrollment that)) return false;
-        return getId() != null && getId().equals(that.getId());
+        return Objects.equals(id, that.id) && status == that.status && Objects.equals(enrolledAt, that.enrolledAt) && Objects.equals(completedAt, that.completedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, status, enrolledAt, completedAt);
     }
 }

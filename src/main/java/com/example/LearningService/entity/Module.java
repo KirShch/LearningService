@@ -32,18 +32,17 @@ public class Module {
     private Course course;
 
     @ToString.Exclude
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "module")
+    @OneToMany(mappedBy = "module")
     private List<Lesson> lessons;
 
     @Override
-    public final boolean equals(Object o) {
-        if (!(o instanceof Module that)) return false;
-        return getId() != null && getId().equals(that.getId());
+    public boolean equals(Object o) {
+        if (!(o instanceof Module module)) return false;
+        return orderInCourse == module.orderInCourse && Objects.equals(id, module.id) && Objects.equals(title, module.title) && Objects.equals(description, module.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title);
+        return Objects.hash(id, title, description, orderInCourse);
     }
-
 }

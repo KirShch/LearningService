@@ -40,14 +40,13 @@ public class User {
     private Instant updatedAt;
 
     @Override
-    public final boolean equals(Object o) {
-        if (!(o instanceof User that)) return false;
-        return getId() != null && getId().equals(that.getId());
+    public boolean equals(Object o) {
+        if (!(o instanceof User user)) return false;
+        return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && role == user.role && Objects.equals(createdAt, user.createdAt) && Objects.equals(updatedAt, user.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email);
+        return Objects.hash(id, email, password, firstName, lastName, role, createdAt, updatedAt);
     }
-
 }

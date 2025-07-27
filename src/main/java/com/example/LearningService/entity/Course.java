@@ -25,7 +25,7 @@ public class Course {
     private String description;
 
     @ToString.Exclude
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "author_id")
     private User author; // TEACHER or ADMIN
 
@@ -34,7 +34,7 @@ public class Course {
     private CourseStatus status; // DRAFT, PUBLISHED, ARCHIVED
 
     @ToString.Exclude
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "course")
+    @OneToMany(mappedBy = "course")
     private List<Module> modules;
 
     @Column(nullable = false)
@@ -43,25 +43,14 @@ public class Course {
     @Column
     private Instant updatedAt;
 
-    /*@Override
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof Course course)) return false;
-        return Objects.equals(id, course.id) && Objects.equals(title, course.title) && Objects.equals(description, course.description) && status == course.status;
+        return Objects.equals(id, course.id) && Objects.equals(title, course.title) && Objects.equals(description, course.description) && status == course.status && Objects.equals(createdAt, course.createdAt) && Objects.equals(updatedAt, course.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, status);
-    }*/
-
-    @Override
-    public final boolean equals(Object o) {
-        if (!(o instanceof Course that)) return false;
-        return getId() != null && getId().equals(that.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, title, description, status, createdAt, updatedAt);
     }
 }

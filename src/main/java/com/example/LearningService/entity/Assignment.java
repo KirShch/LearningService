@@ -18,12 +18,12 @@ public class Assignment {
     private Long id;
 
     @ToString.Exclude
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "lesson_id")
     private Lesson lesson;
 
     @ToString.Exclude
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User student;
 
@@ -41,14 +41,13 @@ public class Assignment {
     private String teacherFeedback;
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (!(o instanceof Assignment that)) return false;
-        return getId() != null && getId().equals(that.getId());
+        return Objects.equals(id, that.id) && Objects.equals(submissionText, that.submissionText) && status == that.status && Objects.equals(grade, that.grade) && Objects.equals(teacherFeedback, that.teacherFeedback);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, submissionText, status, grade, teacherFeedback);
     }
-
 }

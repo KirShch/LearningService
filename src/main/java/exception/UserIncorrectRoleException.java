@@ -1,4 +1,4 @@
-package com.example.LearningService.LearningServiceBuisnessException;
+package exception;
 
 import org.springframework.http.HttpStatus;
 

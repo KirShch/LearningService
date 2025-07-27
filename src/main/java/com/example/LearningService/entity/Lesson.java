@@ -28,7 +28,7 @@ public class Lesson {
     private LessonType type; // TEXT, VIDEO, QUIZ, ASSIGNMENT
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "module_id")
     private Module module;
 
@@ -36,13 +36,13 @@ public class Lesson {
     private boolean isPreview;
 
     @Override
-    public final boolean equals(Object o) {
-        if (!(o instanceof Lesson that)) return false;
-        return getId() != null && getId().equals(that.getId());
+    public boolean equals(Object o) {
+        if (!(o instanceof Lesson lesson)) return false;
+        return isPreview == lesson.isPreview && Objects.equals(id, lesson.id) && Objects.equals(title, lesson.title) && Objects.equals(content, lesson.content) && type == lesson.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title);
+        return Objects.hash(id, title, content, type, isPreview);
     }
 }

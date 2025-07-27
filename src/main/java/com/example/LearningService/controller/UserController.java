@@ -4,6 +4,7 @@ import com.example.LearningService.service.EnrollmentService;
 import com.example.LearningService.service.UserService;
 import com.example.LearningService.dto.UserDto;
 import com.example.LearningService.entity.User;
+import com.example.LearningService.service.ValidService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,21 +21,12 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final EnrollmentService enrollmentService;
+    private final ValidService validService;
 
     @PostMapping("/auth/register")
     public ResponseEntity<?> userRegistration(@Valid @RequestBody UserDto userDto, BindingResult bindingResult){
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            bindingResult.getFieldErrors()
-                    .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
-
-            return ResponseEntity.badRequest().body(
-                    Map.of(
-                            "message", "Validation failed",
-                            "errors", errors
-                    )
-            );
-        }
+        if (bindingResult.hasErrors())
+            return validService.getValidResponse(bindingResult);
 
         return ResponseEntity.ofNullable(userService.userRegistration(userDto));
     }

@@ -1,6 +1,8 @@
 package com.example.LearningService.service;
 
-import com.example.LearningService.LearningServiceBuisnessException.UserIncorrectRoleException;
+import com.example.LearningService.dto.CourseUpdateDto;
+import exception.CourseNotFoundException;
+import exception.UserIncorrectRoleException;
 import com.example.LearningService.dto.CourseDto;
 import com.example.LearningService.entity.Course;
 import com.example.LearningService.entity.Role;
@@ -8,12 +10,12 @@ import com.example.LearningService.entity.User;
 import com.example.LearningService.mapper.CourseMapper;
 import com.example.LearningService.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,30 +24,44 @@ public class CourseService {
     private final CourseMapper courseMapper;
     private final UserService userService;
 
-    @Transactional
     public Course createCourse(CourseDto courseDto){
-        User user = userService.findById(courseDto.getAuthorId());
-
-        if (user.getRole() != Role.ADMIN && user.getRole() != Role.TEACHER)
-            throw new UserIncorrectRoleException("User role is incorrect");
-
-        System.out.println("____\n____\n____\n____\n____\n____\n____\n____\n____\n");
-        System.out.println(courseDto);
-
         Course course = courseMapper.toEntity(courseDto);
+        course.setAuthor(loadAuthor(courseDto.getAuthorId()));
         course.setCreatedAt(Instant.now());
-        course.setAuthor(user);
-
-        System.out.println(course);
 
         return courseRepository.save(course);
     }
 
-    public Optional<Course> findById(Long id){
-        return courseRepository.findById(id);
+    private User loadAuthor(Long id){
+        User user = userService.findById(id);
+        verifyAuthor(user);
+        return user;
+    }
+
+    private void verifyAuthor(User user){
+        if (user.getRole() != Role.ADMIN && user.getRole() != Role.TEACHER)
+            throw new UserIncorrectRoleException("User role is incorrect");
+    }
+
+    public Course findById(Long id){
+        return courseRepository.findById(id)
+                .orElseThrow(() -> new CourseNotFoundException("Course not found, id: " + id));
     }
 
     public List<Course> findAll(){
         return courseRepository.findAll();
+    }
+
+    public Page<Course> findAll(Pageable pageable){
+        return courseRepository.findAll(pageable);
+    }
+
+    public Course updateCourse(CourseUpdateDto courseUpdateDto, Long id){
+        Course course = findById(id);
+        if (courseUpdateDto.getTitle() != null) course.setTitle(courseUpdateDto.getTitle());
+        if (courseUpdateDto.getDescription() != null) course.setDescription(courseUpdateDto.getDescription());
+        if (courseUpdateDto.getStatus() != null) course.setStatus(courseUpdateDto.getStatus());
+        course.setUpdatedAt(Instant.now());
+        return courseRepository.save(course);
     }
 }
