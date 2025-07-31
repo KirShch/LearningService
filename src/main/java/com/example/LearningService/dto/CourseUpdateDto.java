@@ -12,9 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CourseUpdateDto {
     private String title;
-
     private String description;
-
-    //@Pattern(regexp = "DRAFT|PUBLISHED|ARCHIVED", message = "Should be one of: DRAFT, PUBLISHED, ARCHIVED")
     private CourseStatus status;
 }

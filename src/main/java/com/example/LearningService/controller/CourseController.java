@@ -4,17 +4,15 @@ import com.example.LearningService.dto.CourseUpdateDto;
 import com.example.LearningService.service.CourseService;
 import com.example.LearningService.dto.CourseDto;
 import com.example.LearningService.entity.Course;
-import com.example.LearningService.repository.CourseRepository;
 import com.example.LearningService.service.ValidService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -34,6 +32,7 @@ public class CourseController {
     }
 
     @PutMapping("/courses/{id}")
+    @CacheEvict(value = "course", key = "#id")
     public ResponseEntity<?> updateCourse(@PathVariable Long id, @Valid @RequestBody CourseUpdateDto courseUpdateDto, BindingResult bindingResult){
         if (bindingResult.hasErrors())
             return validService.getValidResponse(bindingResult);
@@ -47,5 +46,8 @@ public class CourseController {
         return ResponseEntity.ok(courseService.createCourse(courseDto));
     }
 
-
+    @DeleteMapping("/courses/{id}")
+    public ResponseEntity<?> deleteCourse(@PathVariable Long id){
+        return ResponseEntity.ok(courseService.deleteCourse(id));
+    }
 }

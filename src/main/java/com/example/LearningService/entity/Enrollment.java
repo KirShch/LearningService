@@ -18,12 +18,12 @@ public class Enrollment {
     private Long id;
 
     @ToString.Exclude
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @ToString.Exclude
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
 

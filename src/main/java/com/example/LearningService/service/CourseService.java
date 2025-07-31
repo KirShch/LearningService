@@ -1,6 +1,7 @@
 package com.example.LearningService.service;
 
 import com.example.LearningService.dto.CourseUpdateDto;
+import com.example.LearningService.entity.CourseStatus;
 import exception.CourseNotFoundException;
 import exception.UserIncorrectRoleException;
 import com.example.LearningService.dto.CourseDto;
@@ -10,6 +11,7 @@ import com.example.LearningService.entity.User;
 import com.example.LearningService.mapper.CourseMapper;
 import com.example.LearningService.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,11 +27,15 @@ public class CourseService {
     private final UserService userService;
 
     public Course createCourse(CourseDto courseDto){
+        Course course = buildCourse(courseDto);
+        return courseRepository.save(course);
+    }
+
+    private Course buildCourse(CourseDto courseDto){
         Course course = courseMapper.toEntity(courseDto);
         course.setAuthor(loadAuthor(courseDto.getAuthorId()));
         course.setCreatedAt(Instant.now());
-
-        return courseRepository.save(course);
+        return course;
     }
 
     private User loadAuthor(Long id){
@@ -43,6 +49,7 @@ public class CourseService {
             throw new UserIncorrectRoleException("User role is incorrect");
     }
 
+    @Cacheable(value = "course", unless = "#result == null || #result.isEmpty()")
     public Course findById(Long id){
         return courseRepository.findById(id)
                 .orElseThrow(() -> new CourseNotFoundException("Course not found, id: " + id));
@@ -57,10 +64,22 @@ public class CourseService {
     }
 
     public Course updateCourse(CourseUpdateDto courseUpdateDto, Long id){
+        Course course = getUpdatedCourse(courseUpdateDto, id);
+        return courseRepository.save(course);
+    }
+
+    private Course getUpdatedCourse(CourseUpdateDto courseUpdateDto, Long id){
         Course course = findById(id);
         if (courseUpdateDto.getTitle() != null) course.setTitle(courseUpdateDto.getTitle());
         if (courseUpdateDto.getDescription() != null) course.setDescription(courseUpdateDto.getDescription());
         if (courseUpdateDto.getStatus() != null) course.setStatus(courseUpdateDto.getStatus());
+        course.setUpdatedAt(Instant.now());
+        return course;
+    }
+
+    public Course deleteCourse(Long id){
+        Course course = findById(id);
+        course.setStatus(CourseStatus.ARCHIVED);
         course.setUpdatedAt(Instant.now());
         return courseRepository.save(course);
     }

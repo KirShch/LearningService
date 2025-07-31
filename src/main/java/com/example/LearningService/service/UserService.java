@@ -37,7 +37,6 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found, id: " + id));
     }
 
-
     public boolean existsByEmail(String email){
         return userRepository.existsByEmail(email);
     }
@@ -46,12 +45,7 @@ public class UserService {
         return userRepository.existsById(id);
     }
 
-
     public List<User> getAllUsers(){
         return userRepository.findAll();
     }
-
-
-
-
 }
