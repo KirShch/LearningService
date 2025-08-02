@@ -2,8 +2,8 @@ package com.example.LearningService.service;
 
 import com.example.LearningService.dto.CourseUpdateDto;
 import com.example.LearningService.entity.CourseStatus;
-import exception.CourseNotFoundException;
-import exception.UserIncorrectRoleException;
+import com.example.LearningService.exception.CourseNotFoundException;
+import com.example.LearningService.exception.UserIncorrectRoleException;
 import com.example.LearningService.dto.CourseDto;
 import com.example.LearningService.entity.Course;
 import com.example.LearningService.entity.Role;
@@ -31,7 +31,7 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
-    private Course buildCourse(CourseDto courseDto){
+    public Course buildCourse(CourseDto courseDto){
         Course course = courseMapper.toEntity(courseDto);
         course.setAuthor(loadAuthor(courseDto.getAuthorId()));
         course.setCreatedAt(Instant.now());
@@ -44,7 +44,7 @@ public class CourseService {
         return user;
     }
 
-    private void verifyAuthor(User user){
+    public void verifyAuthor(User user){
         if (user.getRole() != Role.ADMIN && user.getRole() != Role.TEACHER)
             throw new UserIncorrectRoleException("User role is incorrect");
     }

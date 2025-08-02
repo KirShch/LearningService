@@ -1,4 +1,4 @@
-package exception;
+package com.example.LearningService.exception;
 
 import com.example.LearningService.dto.ErrorResponseDto;
 import org.springframework.http.ResponseEntity;

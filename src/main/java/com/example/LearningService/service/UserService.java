@@ -1,14 +1,13 @@
 package com.example.LearningService.service;
 
-import exception.UserEmailExistsException;
-import exception.UserNotFoundException;
+import com.example.LearningService.exception.UserEmailExistsException;
+import com.example.LearningService.exception.UserNotFoundException;
 import com.example.LearningService.dto.UserDto;
 import com.example.LearningService.entity.User;
 import com.example.LearningService.mapper.UserMapper;
 import com.example.LearningService.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;

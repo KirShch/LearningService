@@ -36,6 +36,15 @@ dependencies {
 	runtimeOnly("org.postgresql:postgresql")
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
+
+	/*testImplementation("org.testcontainers:testcontainers:1.24.4")
+	testImplementation("org.testcontainers:junit-jupiter:1.24.4")
+	testImplementation("org.testcontainers:postgresql:1.24.4")*/
+
+	testImplementation("org.testcontainers:testcontainers")
+	testImplementation("org.testcontainers:junit-jupiter")
+	testImplementation("org.testcontainers:postgresql")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
