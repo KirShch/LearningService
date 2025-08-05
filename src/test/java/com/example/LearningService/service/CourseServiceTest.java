@@ -47,10 +47,10 @@ class CourseServiceTest {
 
     @Test
     void buildCourse() {
-        CourseDto courseDto = new CourseDto("Addition", "ädding", 1L, CourseStatus.PUBLISHED);
+        CourseDto courseDto = new CourseDto("Addition", "adding", 1L, CourseStatus.PUBLISHED);
         Course course = new Course();
         course.setTitle("Addition");
-        course.setDescription("ädding");
+        course.setDescription("adding");
         course.setId(1L);
         course.setStatus(CourseStatus.PUBLISHED);
 
@@ -61,7 +61,7 @@ class CourseServiceTest {
 
         assertNotNull(result.getId());
         assertEquals("Addition", result.getTitle());
-        assertEquals("ädding", result.getDescription());
+        assertEquals("adding", result.getDescription());
         assertEquals(user, result.getAuthor());
         assertEquals(CourseStatus.PUBLISHED, result.getStatus());
     }
