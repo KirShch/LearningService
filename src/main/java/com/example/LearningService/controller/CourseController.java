@@ -27,27 +27,22 @@ public class CourseController {
     }
 
     @GetMapping("/courses/{id}")
-    public ResponseEntity<?> getCourses(@PathVariable Long id){
+    public ResponseEntity<Course> getCourses(@PathVariable Long id){
         return ResponseEntity.ok(courseService.findById(id));
     }
 
     @PutMapping("/courses/{id}")
-    @CacheEvict(value = "course", key = "#id")
-    public ResponseEntity<?> updateCourse(@PathVariable Long id, @Valid @RequestBody CourseUpdateDto courseUpdateDto, BindingResult bindingResult){
-        if (bindingResult.hasErrors())
-            return validService.getValidResponse(bindingResult);
+    public ResponseEntity<Course> updateCourse(@PathVariable Long id, @Valid @RequestBody CourseUpdateDto courseUpdateDto){
         return ResponseEntity.ok(courseService.updateCourse(courseUpdateDto, id));
     }
 
     @PostMapping("/courses")
-    public ResponseEntity<?> createCourse(@Valid @RequestBody CourseDto courseDto, BindingResult bindingResult){
-        if (bindingResult.hasErrors())
-            return validService.getValidResponse(bindingResult);
+    public ResponseEntity<Course> createCourse(@Valid @RequestBody CourseDto courseDto){
         return ResponseEntity.ok(courseService.createCourse(courseDto));
     }
 
     @DeleteMapping("/courses/{id}")
-    public ResponseEntity<?> deleteCourse(@PathVariable Long id){
+    public ResponseEntity<Course> deleteCourse(@PathVariable Long id){
         return ResponseEntity.ok(courseService.deleteCourse(id));
     }
 }

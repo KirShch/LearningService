@@ -25,6 +25,6 @@ public class CourseControllerTest {
     @Test
     void getCoursePathVariableTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/courses/abc"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());;
     }
 }

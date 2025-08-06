@@ -7,6 +7,7 @@ import com.example.LearningService.entity.EnrollmentStatus;
 import com.example.LearningService.entity.User;
 import com.example.LearningService.repository.EnrollmentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ public class EnrollmentService {
         return enrollmentRepository.findEnrollmentsByUser(user);
     }
 
+    @CacheEvict(cacheNames = {"top5CoursesByEnrollments","enrollmentsByUser"}, key = "#enrollmentDto.userId")
     public Enrollment createEnrollment(EnrollmentDto enrollmentDto){
         User user = userService.findById(enrollmentDto.userId());
         Course course = courseService.findById(enrollmentDto.courseId());
@@ -46,13 +48,14 @@ public class EnrollmentService {
 
     @Cacheable(value = "top5CoursesByEnrollments", unless = "#result == null || #result.isEmpty()")
     public List<Course> getTop5CoursesByEnrollments(){
-        return findAll().stream()
+        return enrollmentRepository.getTop5CoursesByEnrollments();
+        /*return findAll().stream()
                 .collect(Collectors.groupingBy(Enrollment::getCourse
                         , Collectors.counting()))
                 .entrySet().stream()
                 .sorted((e1,e2)->-Long.compare(e1.getValue(),e2.getValue()))
                 .limit(5)
                 .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
     }
 }

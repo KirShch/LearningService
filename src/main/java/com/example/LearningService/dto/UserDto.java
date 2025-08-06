@@ -17,7 +17,7 @@ public class UserDto {
 
     @NotNull(message = "password should not be empty")
     @Size(min = 4)
-    private String password; // захеширован
+    private String password;
 
     @NotNull(message = "firstName should not be empty")
     private String firstName;

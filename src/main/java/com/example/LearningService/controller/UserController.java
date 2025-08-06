@@ -2,6 +2,7 @@ package com.example.LearningService.controller;
 
 import com.example.LearningService.dto.EnrollmentDto;
 import com.example.LearningService.entity.Course;
+import com.example.LearningService.entity.Enrollment;
 import com.example.LearningService.service.EnrollmentService;
 import com.example.LearningService.service.UserService;
 import com.example.LearningService.dto.UserDto;
@@ -25,14 +26,12 @@ public class UserController {
     private final ValidService validService;
 
     @PostMapping("/auth/register")
-    public ResponseEntity<?> userRegistration(@Valid @RequestBody UserDto userDto, BindingResult bindingResult){
-        if (bindingResult.hasErrors())
-            return validService.getValidResponse(bindingResult);
+    public ResponseEntity<User> userRegistration(@Valid @RequestBody UserDto userDto){
         return ResponseEntity.ofNullable(userService.userRegistration(userDto));
     }
 
     @GetMapping("/users/{userId}/enrollments")
-    public ResponseEntity<?> getUserEnrollments(@PathVariable Long userId){
+    public ResponseEntity<List<Enrollment>> getUserEnrollments(@PathVariable Long userId){
         return ResponseEntity.ok(enrollmentService.getEnrollmentsByUser(userId));
     }
 
@@ -47,8 +46,7 @@ public class UserController {
     }
 
     @PostMapping("/users/enrollments")
-    @CacheEvict(cacheNames = {"top5CoursesByEnrollments","enrollmentsByUser"}, key = "#enrollmentDto.userId")
-    public ResponseEntity<?> createEnrollment(@RequestBody EnrollmentDto enrollmentDto){
+    public ResponseEntity<Enrollment> createEnrollment(@RequestBody EnrollmentDto enrollmentDto){
         return ResponseEntity.ok(enrollmentService.createEnrollment(enrollmentDto));
     }
 }

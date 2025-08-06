@@ -19,6 +19,8 @@ public class UserService {
     private final UserMapper userMapper;
 
     public User userRegistration(UserDto userDto){
+        if (userDto == null)
+            throw new UserNotFoundException("User not found, dto is empty");
         if (existsByEmail(userDto.getEmail()))
             throw new UserEmailExistsException("User exists with email: " + userDto.getEmail());
         User user = userMapper.toEntity(userDto);
@@ -32,6 +34,8 @@ public class UserService {
     }
 
     public User findById(Long id){
+        if (id == null)
+            throw new UserNotFoundException("User not found, id is null");
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found, id: " + id));
     }

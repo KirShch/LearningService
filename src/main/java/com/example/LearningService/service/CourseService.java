@@ -8,9 +8,12 @@ import com.example.LearningService.dto.CourseDto;
 import com.example.LearningService.entity.Course;
 import com.example.LearningService.entity.Role;
 import com.example.LearningService.entity.User;
+import com.example.LearningService.exception.UserNotFoundException;
 import com.example.LearningService.mapper.CourseMapper;
 import com.example.LearningService.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +54,8 @@ public class CourseService {
 
     @Cacheable(value = "course", unless = "#result == null || #result.isEmpty()")
     public Course findById(Long id){
+        if (id == null)
+            throw new CourseNotFoundException("Course not found, id is null");
         return courseRepository.findById(id)
                 .orElseThrow(() -> new CourseNotFoundException("Course not found, id: " + id));
     }
@@ -63,6 +68,7 @@ public class CourseService {
         return courseRepository.findAll(pageable);
     }
 
+    @CachePut(cacheNames = "course", key = "#id")
     public Course updateCourse(CourseUpdateDto courseUpdateDto, Long id){
         Course course = getUpdatedCourse(courseUpdateDto, id);
         return courseRepository.save(course);
