@@ -128,10 +128,13 @@ public class CourseAndEnrollmentIntegrationTest {
         for (int i = 1; i < userDtoList.size(); i++){
             userService.userRegistration(userDtoList.get(i));
         }
+        for (int i = 0; i < userDtoList.size(); i++){
+            System.out.println(userRepository.findById((long)(i+1)).get().getRole());
+        }
         for (int i = 0; i < courseDtoList.size(); i++){
             courseService.createCourse(courseDtoList.get(i));
         }
-        for (int i = 1; i < enrollmentDtoList.size(); i++){
+        for (int i = 0; i < enrollmentDtoList.size(); i++){
             enrollmentService.createEnrollment(enrollmentDtoList.get(i));
         }
 

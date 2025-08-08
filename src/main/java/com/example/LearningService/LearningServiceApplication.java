@@ -7,10 +7,8 @@ import org.springframework.cache.annotation.EnableCaching;
 @SpringBootApplication
 @EnableCaching
 public class LearningServiceApplication {
-
 	public static void main(String[] args) {
 
 		SpringApplication.run(LearningServiceApplication.class, args);
 	}
-
 }
