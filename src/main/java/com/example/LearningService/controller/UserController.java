@@ -8,6 +8,10 @@ import com.example.LearningService.service.UserService;
 import com.example.LearningService.dto.UserDto;
 import com.example.LearningService.entity.User;
 import com.example.LearningService.service.ValidService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -20,12 +24,18 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
+@Tag(name = "User API", description = "User and enrollment registration, getting information")
 public class UserController {
     private final UserService userService;
     private final EnrollmentService enrollmentService;
 
+    @Operation(summary = "User registration", description = "register User by received User DTO")
+    @ApiResponse(responseCode = "200", description = "User added")
     @PostMapping("/auth/register")
-    public User userRegistration(@Valid @RequestBody UserDto userDto){
+    public User userRegistration(
+            @Parameter(description = "User data", required = true)
+            @Valid @RequestBody UserDto userDto
+    ){
         return userService.userRegistration(userDto);
     }
 
@@ -34,6 +44,8 @@ public class UserController {
         return enrollmentService.getEnrollmentsByUser(userId);
     }
 
+    @Operation(summary = "Getting all users", description = "get all users")
+    @ApiResponse(responseCode = "200", description = "All users got")
     @GetMapping("/users/getall")
     public List<User> getAllUser(){
         return userService.getAllUsers();
