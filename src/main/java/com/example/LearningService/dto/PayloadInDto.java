@@ -1,5 +1,6 @@
 package com.example.LearningService.dto;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class KafkaTestDto {
-    String sender;
-    String message;
+public class PayloadInDto {
+    private Long externalCourseId;
+    private String title;
+    private String description;
+    private String authorEmail;
 }

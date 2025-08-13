@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class KafkaTestDto {
-    String sender;
-    String message;
+public class CourseInDto {
+    private Long eventId;
+    private String systemId;
+    private PayloadInDto payload;
 }

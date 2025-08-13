@@ -23,16 +23,15 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final EnrollmentService enrollmentService;
-    private final ValidService validService;
 
     @PostMapping("/auth/register")
-    public ResponseEntity<User> userRegistration(@Valid @RequestBody UserDto userDto){
-        return ResponseEntity.ofNullable(userService.userRegistration(userDto));
+    public User userRegistration(@Valid @RequestBody UserDto userDto){
+        return userService.userRegistration(userDto);
     }
 
     @GetMapping("/users/{userId}/enrollments")
-    public ResponseEntity<List<Enrollment>> getUserEnrollments(@PathVariable Long userId){
-        return ResponseEntity.ok(enrollmentService.getEnrollmentsByUser(userId));
+    public List<Enrollment> getUserEnrollments(@PathVariable Long userId){
+        return enrollmentService.getEnrollmentsByUser(userId);
     }
 
     @GetMapping("/users/getall")
@@ -46,7 +45,7 @@ public class UserController {
     }
 
     @PostMapping("/users/enrollments")
-    public ResponseEntity<Enrollment> createEnrollment(@RequestBody EnrollmentDto enrollmentDto){
-        return ResponseEntity.ok(enrollmentService.createEnrollment(enrollmentDto));
+    public Enrollment createEnrollment(@RequestBody EnrollmentDto enrollmentDto){
+        return enrollmentService.createEnrollment(enrollmentDto);
     }
 }

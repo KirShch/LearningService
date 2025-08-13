@@ -29,6 +29,8 @@ services:
     image: zookeeper:3.7.0
     container_name: zookeeper
     restart: "no"
+    volumes:
+      - ./zk_data:/var/lib/zookeeper/data
     networks:
       - kafka-net
     ports:
@@ -38,6 +40,8 @@ services:
     image: obsidiandynamics/kafka
     container_name: kafka
     restart: "no"
+    volumes:
+      - ./kafka_data:/var/lib/kafka/data
     networks:
       - kafka-net
     ports:
@@ -50,6 +54,12 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
       KAFKA_BROKER_ID: 1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_LOG_RETENTION_MS: -1
+      #KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"     # Автосоздание топиков
+      #KAFKA_LOG_DIRS: /var/lib/kafka/data         # Путь для хранения логов Kafka
+      #KAFKA_LOG_RETENTION_MS: -1                  # Отключить автоматическое удаление
+      #KAFKA_LOG_SEGMENT_BYTES: 1073741824         # Размер сегмента логов (1 ГБ)
     depends_on:
       - zookeeper
 

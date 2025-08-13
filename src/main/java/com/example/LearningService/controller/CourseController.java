@@ -7,11 +7,8 @@ import com.example.LearningService.entity.Course;
 import com.example.LearningService.service.ValidService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class CourseController {
     private final CourseService courseService;
-    private final ValidService validService;
 
     @GetMapping("/courses")
     public Page<Course> getCourses(Pageable pageable){
@@ -27,22 +23,22 @@ public class CourseController {
     }
 
     @GetMapping("/courses/{id}")
-    public ResponseEntity<Course> getCourses(@PathVariable Long id){
-        return ResponseEntity.ok(courseService.findById(id));
+    public Course getCourses(@PathVariable Long id){
+        return courseService.findById(id);
     }
 
     @PutMapping("/courses/{id}")
-    public ResponseEntity<Course> updateCourse(@PathVariable Long id, @Valid @RequestBody CourseUpdateDto courseUpdateDto){
-        return ResponseEntity.ok(courseService.updateCourse(courseUpdateDto, id));
+    public Course updateCourse(@PathVariable Long id, @Valid @RequestBody CourseUpdateDto courseUpdateDto){
+        return courseService.updateCourse(courseUpdateDto, id);
     }
 
     @PostMapping("/courses")
-    public ResponseEntity<Course> createCourse(@Valid @RequestBody CourseDto courseDto){
-        return ResponseEntity.ok(courseService.createCourse(courseDto));
+    public Course createCourse(@Valid @RequestBody CourseDto courseDto){
+        return courseService.createCourse(courseDto);
     }
 
     @DeleteMapping("/courses/{id}")
-    public ResponseEntity<Course> deleteCourse(@PathVariable Long id){
-        return ResponseEntity.ok(courseService.deleteCourse(id));
+    public Course deleteCourse(@PathVariable Long id){
+        return courseService.deleteCourse(id);
     }
 }
