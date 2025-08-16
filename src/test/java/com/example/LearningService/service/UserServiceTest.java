@@ -41,7 +41,6 @@ class UserServiceTest {
         user.setRole(Role.ADMIN);
     }
 
-
     @Test
     void userRegistration() {
         UserDto userDto = new UserDto("email@test.t", "1234", "A", "B", Role.ADMIN);

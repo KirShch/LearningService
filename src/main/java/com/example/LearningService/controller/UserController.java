@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -24,6 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
+@Slf4j
 @Tag(name = "User API", description = "User and enrollment registration, getting information")
 public class UserController {
     private final UserService userService;
@@ -36,6 +38,7 @@ public class UserController {
             @Parameter(description = "User data", required = true)
             @Valid @RequestBody UserDto userDto
     ){
+        log.info("UserDto for registration obtained (from REST post endpoint api/auth/register)");
         return userService.userRegistration(userDto);
     }
 
@@ -58,6 +61,7 @@ public class UserController {
 
     @PostMapping("/users/enrollments")
     public Enrollment createEnrollment(@RequestBody EnrollmentDto enrollmentDto){
+        log.info("EnrollmentDto obtained (from REST post endpoint api/users/enrollments)");
         return enrollmentService.createEnrollment(enrollmentDto);
     }
 }

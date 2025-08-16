@@ -11,6 +11,7 @@ import com.example.LearningService.repository.CourseRepository;
 import com.example.LearningService.repository.EnrollmentRepository;
 import com.example.LearningService.repository.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -69,6 +70,7 @@ public class CourseAndEnrollmentIntegrationTest {
     @Autowired
     private CacheManager cacheManager;
 
+
     private static List<UserDto> userDtoList;
     private static List<CourseDto> courseDtoList;
     private static List<EnrollmentDto> enrollmentDtoList;
@@ -109,27 +111,26 @@ public class CourseAndEnrollmentIntegrationTest {
     }
 
     @Test
+    @Order(1)
     void testContainerIsRunning() {
         assertTrue(postgres.isRunning());
         assertEquals(postgres.getDatabaseName(),"testdb");
     }
 
     @Test
-    void shouldSaveUserToRealDatabase() {
-        User user = userService.userRegistration(userDtoList.get(0));
+    @Order(2)
+    void shouldGetUserFromRealDatabase() {
+        User user = userService.findByEmail(userDtoList.get(0).getEmail());
         assertNotNull(user.getId());
-        assertEquals(user.getId(), 1L);
+        assertEquals(user.getFirstName(), userDtoList.get(0).getFirstName());
         //userRepository.deleteById(6L);
     }
 
     @Test
+    @Order(3)
     void shouldSaveAllEntity(){
-        //user 0 always saved
-        for (int i = 1; i < userDtoList.size(); i++){
-            userService.userRegistration(userDtoList.get(i));
-        }
         for (int i = 0; i < userDtoList.size(); i++){
-            System.out.println(userRepository.findById((long)(i+1)).get().getRole());
+            userService.userRegistration(userDtoList.get(i));
         }
         for (int i = 0; i < courseDtoList.size(); i++){
             courseService.createCourse(courseDtoList.get(i));
@@ -150,12 +151,14 @@ public class CourseAndEnrollmentIntegrationTest {
     }
 
     @Test
+    @Order(4)
     void courseDetailTest(){
         Course course = courseService.findById(1L);
         assertEquals(course.getAuthor(), userService.findById(2L));
     }
 
     @Test
+    @Order(5)
     void cacheUsingTaste(){
         long startTime = System.currentTimeMillis();
         List<Course> firstCall = enrollmentService.getTop5CoursesByEnrollments();
@@ -176,6 +179,7 @@ public class CourseAndEnrollmentIntegrationTest {
     }
 
     @Test
+    @Order(6)
     void top5CoursesByEnrollments(){
         List<Course> top = enrollmentService.getTop5CoursesByEnrollments();
         Set<Long> topId = top.stream()

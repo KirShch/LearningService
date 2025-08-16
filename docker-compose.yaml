@@ -3,8 +3,8 @@
 #version: '3.8'
 
 networks:
-  kafka-net:
-    name: kafka-net
+  app-net:
+    name: app-net
     driver: bridge
 
 services:
@@ -19,6 +19,8 @@ services:
       - "5432:5432"
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-net
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U java_user -d java_db" ]
       interval: 5s
@@ -28,22 +30,26 @@ services:
   zookeeper:
     image: zookeeper:3.7.0
     container_name: zookeeper
-    restart: "no"
     volumes:
-      - ./zk_data:/var/lib/zookeeper/data
+      - zk_data:/var/lib/zookeeper/data
     networks:
-      - kafka-net
+      - app-net
     ports:
       - "2181:2181"
+    healthcheck:
+      test: [ "CMD-SHELL", "zkServer.sh status" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   kafka:
     image: obsidiandynamics/kafka
     container_name: kafka
-    restart: "no"
     volumes:
-      - ./kafka_data:/var/lib/kafka/data
+      - kafka_data:/var/lib/kafka/data
+      - kafka_log:/var/lib/kafka/log
     networks:
-      - kafka-net
+      - app-net
     ports:
       - "9092:9092"
     environment:
@@ -51,23 +57,29 @@ services:
       KAFKA_LISTENERS: DOCKER_INTERNAL://:29092,DOCKER_EXTERNAL://:9092
       KAFKA_ADVERTISED_LISTENERS: DOCKER_INTERNAL://kafka:29092,DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER_INTERNAL
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_BROKER_ID: 1
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_LOG_DIRS: /var/lib/kafka/data
-      KAFKA_LOG_RETENTION_MS: -1
+      #KAFKA_CFG_LOG_FLUSH_INTERVAL_MESSAGES: 10000
+      #KAFKA_CFG_LOG_FLUSH_INTERVAL_MS: 1000
+      #KAFKA_CFG_LOG_RETENTION_HOURS: 168
+      #KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      #KAFKA_LOG_DIRS: /var/lib/kafka/data
+      #KAFKA_LOG_RETENTION_MS: -1
       #KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"     # Автосоздание топиков
       #KAFKA_LOG_DIRS: /var/lib/kafka/data         # Путь для хранения логов Kafka
       #KAFKA_LOG_RETENTION_MS: -1                  # Отключить автоматическое удаление
       #KAFKA_LOG_SEGMENT_BYTES: 1073741824         # Размер сегмента логов (1 ГБ)
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
+    volumes:
+      - kafka-ui_data:/var/lib/kafka-ui/data
     networks:
-      - kafka-net
+      - app-net
     ports:
       - "8081:8080"
     environment:
@@ -77,3 +89,27 @@ services:
     depends_on:
       - kafka
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - app-net
+
+volumes:
+  zk_data:
+    name: zk_data
+  kafka_data:
+    name: kafka_data
+  kafka_log:
+    name: kafka_log
+  kafka-ui_data:
+    name: kafka-ui_data
+  rabbitmq_data:
+    name: rabbitmq_data
