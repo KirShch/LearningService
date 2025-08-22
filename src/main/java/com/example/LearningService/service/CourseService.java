@@ -52,7 +52,7 @@ public class CourseService {
             throw new UserIncorrectRoleException("User role is incorrect");
     }
 
-    //@Cacheable(value = "course", unless = "#result == null || #result.isEmpty()")
+    @Cacheable(value = "course") //unless = "#result == null || #result.isEmpty()") // у типа Course нет метода isEmpty()
     public Course findById(Long id){
         if (id == null)
             throw new CourseNotFoundException("Course not found, id is null");
