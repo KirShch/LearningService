@@ -42,8 +42,12 @@ public class UserController {
         return userService.userRegistration(userDto);
     }
 
+    @Operation(summary = "Get user enrollments", description = "Get list of user enrollment by user id")
+    @ApiResponse(responseCode = "200", description = "User enrollments got")
     @GetMapping("/users/{userId}/enrollments")
-    public List<Enrollment> getUserEnrollments(@PathVariable Long userId){
+    public List<Enrollment> getUserEnrollments(
+            @Parameter(description = "User id in path", required = true)
+            @PathVariable Long userId){
         return enrollmentService.getEnrollmentsByUser(userId);
     }
 
@@ -54,13 +58,19 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @Operation(summary = "Get top 5 courses", description = "Get list of top 5 courses by count of their enrollments")
+    @ApiResponse(responseCode = "200", description = "Top 5 courses got")
     @GetMapping("/courses/top5")
     public List<Course> getTop5CoursesByEnrollments(){
         return enrollmentService.getTop5CoursesByEnrollments();
     }
 
+    @Operation(summary = "Create enrollment", description = "Create new enrollment by DTO")
+    @ApiResponse(responseCode = "200", description = "Enrollment created")
     @PostMapping("/users/enrollments")
-    public Enrollment createEnrollment(@RequestBody EnrollmentDto enrollmentDto){
+    public Enrollment createEnrollment(
+            @Parameter(description = "Enrollment", required = true)
+            @RequestBody EnrollmentDto enrollmentDto){
         log.info("EnrollmentDto obtained (from REST post endpoint api/users/enrollments)");
         return enrollmentService.createEnrollment(enrollmentDto);
     }

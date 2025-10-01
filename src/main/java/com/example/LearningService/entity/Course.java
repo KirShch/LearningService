@@ -1,5 +1,6 @@
 package com.example.LearningService.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.Instant;
@@ -35,6 +36,7 @@ public class Course {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "course")
+    @JsonIgnore
     private List<Module> modules;
 
     @Column(nullable = false)
